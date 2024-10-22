@@ -14,9 +14,7 @@ import { useSearchHistoryStore } from "./store/useSearchHistoryStore";
 function App() {
   const [input, setInput] = useState("");
   const [wasClicked, setWasClicked] = useState(false);
-  const searchHistory = useSearchHistoryStore(
-    (state) => state.searchHistoryObject
-  );
+  const searchHistory = useSearchHistoryStore((state) => state.searchHistoryObject);
   const searchHistoryObject = searchHistory();
   const saveSearchHistory = useSearchHistoryStore((state) => state.save);
 
@@ -47,7 +45,6 @@ function App() {
               />
             )}
           />
-
           <Button variant="contained" onClick={() => buttonClick()}>
             Submit
           </Button>
