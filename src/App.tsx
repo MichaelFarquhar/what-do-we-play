@@ -9,8 +9,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchHistoryStore } from "./store/useSearchHistoryStore";
+import { useXmlData } from "./hooks/useXMLData";
+import { fetchTest } from "./api/fetchTest";
+import axios from "axios";
+import { API_ROUTE_COLLECTION } from "./api/config";
+import { parseString } from "xml2js";
+import { XMLParser } from "fast-xml-parser";
 
 function App() {
   const [input, setInput] = useState<string[]>([]);
@@ -19,10 +25,33 @@ function App() {
   const searchHistoryObject = searchHistory();
   const saveSearchHistory = useSearchHistoryStore((state) => state.save);
 
-  const buttonClick = () => {
+  console.log(input);
+  const buttonClick = async () => {
     console.log("Button was clicked with input: " + input);
     setWasClicked(true);
     if (input) saveSearchHistory(input);
+
+    const corsProxy = "https://cors-anywhere.herokuapp.com/";
+
+    const response = await axios({
+      method: "get",
+      url: API_ROUTE_COLLECTION(input[0]),
+      headers: {
+        Accept: "application/xml",
+        "Content-Type": "application/xml",
+      },
+    });
+
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      attributeNamePrefix: "",
+    });
+    let jObj = parser.parse(response.data);
+    console.log(jObj);
+
+    // const { data, error } = useXmlData("test", fetchTest);
+    // console.log(data);
+    // console.log(error);
   };
 
   return (
