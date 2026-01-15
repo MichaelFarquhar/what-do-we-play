@@ -1,8 +1,13 @@
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { Box } from "@mui/material";
-import { Header } from "./Header";
-import { Outlet } from "@tanstack/react-router";
+import { Header } from "../layouts/Header";
 
-export const BaseLayout = () => {
+export const Route = createRootRoute({
+  component: RootComponent,
+});
+
+function RootComponent() {
   return (
     <Box
       component="div"
@@ -23,6 +28,7 @@ export const BaseLayout = () => {
       >
         <Outlet />
       </Box>
+      <TanStackRouterDevtools position="bottom-right" />
     </Box>
   );
-};
+}
