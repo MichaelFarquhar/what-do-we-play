@@ -9,29 +9,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useSearchHistoryStore } from "./store/useSearchHistoryStore";
-import { useXmlData } from "./hooks/useXMLData";
-import { fetchTest } from "./api/fetchTest";
+import { useState } from "react";
 import axios from "axios";
 import { API_ROUTE_COLLECTION } from "./api/config";
-import { parseString } from "xml2js";
 import { XMLParser } from "fast-xml-parser";
 
 function App() {
   const [input, setInput] = useState<string[]>([]);
   const [wasClicked, setWasClicked] = useState(false);
-  const searchHistory = useSearchHistoryStore((state) => state.searchHistoryObject);
-  const searchHistoryObject = searchHistory();
-  const saveSearchHistory = useSearchHistoryStore((state) => state.save);
 
   console.log(input);
   const buttonClick = async () => {
     console.log("Button was clicked with input: " + input);
     setWasClicked(true);
-    if (input) saveSearchHistory(input);
-
-    const corsProxy = "https://cors-anywhere.herokuapp.com/";
 
     const response = await axios({
       method: "get",
@@ -46,12 +36,8 @@ function App() {
       ignoreAttributes: false,
       attributeNamePrefix: "",
     });
-    let jObj = parser.parse(response.data);
+    const jObj = parser.parse(response.data);
     console.log(jObj);
-
-    // const { data, error } = useXmlData("test", fetchTest);
-    // console.log(data);
-    // console.log(error);
   };
 
   return (
@@ -64,7 +50,7 @@ function App() {
             freeSolo
             size="small"
             fullWidth
-            options={searchHistoryObject.map((option) => option.title)}
+            options={[] as string[]}
             onChange={(_event, newValue) => setInput(newValue)}
             renderTags={(value: readonly string[], getTagProps) =>
               value.map((option: string, index: number) => {
@@ -73,13 +59,7 @@ function App() {
               })
             }
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Username"
-                id="outlined-size-small"
-                value={input}
-                // onChange={(el) => console.log(el.target.value)}
-              />
+              <TextField {...params} label="Username" id="outlined-size-small" value={input} />
             )}
           />
           <Button variant="contained" onClick={() => buttonClick()}>

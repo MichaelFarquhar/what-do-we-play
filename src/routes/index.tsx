@@ -11,7 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { useSearchHistoryStore } from "../store/useSearchHistoryStore";
 import axios from "axios";
 import { API_ROUTE_COLLECTION } from "../api/config";
 import { XMLParser } from "fast-xml-parser";
@@ -23,16 +22,12 @@ export const Route = createFileRoute("/")({
 function IndexComponent() {
   const [input, setInput] = useState<string[]>([]);
   const [wasClicked, setWasClicked] = useState(false);
-  const searchHistory = useSearchHistoryStore((state) => state.searchHistoryObject);
-  const searchHistoryObject = searchHistory();
-  const saveSearchHistory = useSearchHistoryStore((state) => state.save);
 
   console.log(input);
 
   const buttonClick = async () => {
     console.log("Button was clicked with input: " + input);
     setWasClicked(true);
-    if (input) saveSearchHistory(input);
 
     const response = await axios({
       method: "get",
@@ -61,7 +56,7 @@ function IndexComponent() {
             freeSolo
             size="small"
             fullWidth
-            options={searchHistoryObject.map((option) => option.title)}
+            options={[] as string[]}
             onChange={(_event, newValue) => setInput(newValue)}
             renderTags={(value: readonly string[], getTagProps) =>
               value.map((option: string, index: number) => {
